@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Schedule</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        div.schedule {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: 20px auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        strong {
+            color: #007bff;
+        }
+        a {
+            display: inline-block;
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        a:hover {
+            background-color: #565e64;
+        }
+        .schedule-options {
+            text-align: center;
+            margin-bottom: 20px;
+            
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Your Schedule</h1>
+        <!-- Schedule Options -->
+        <div class="schedule-options">
+            <a href="{{ url_for('set_schedule') }}">Set Schedule</a>
+            <a href="{{ url_for('update_schedule') }}">Update Schedule</a>
+        </div>
+    
+    <div class="schedule">
+        {% if schedule %}
+            <strong>Days:</strong> {{ ", ".join(schedule.days) }}<br>
+            <strong>Start Time:</strong> {{ schedule.start_time }}<br>
+            <strong>End Time:</strong> {{ schedule.end_time }}<br>
+        {% else %}
+            <p>You have not set a schedule yet.</p>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('doctor_dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

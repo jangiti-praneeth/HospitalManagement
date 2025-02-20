@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Appointments</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        .btn-disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            padding: 5px 10px;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+        }
+               
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -60px;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333; /* Updated to match first snippet's color */
+            text-align: left;
+            padding: 8px;
+        }
+
+        td {
+            background-color: #f9f9f9; /* Updated to match first snippet's color */
+            color: #333; /* Updated to match first snippet's color */
+            padding: 8px;
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f4f4f4; /* Updated to match first snippet's even row color */
+        }
+
+        a, input[type=submit] {
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        a {
+            background-color: #5bc0de;
+        }
+
+        a:hover {
+            background-color: #31b0d5;
+        }
+
+        input[type=submit] {
+            background-color: #d9534f;
+        }
+
+        input[type=submit]:hover {
+            background-color: #c9302c;
+        }
+
+        form {
+            display: inline; /* To show buttons on the same line */
+        }
+
+        .no-appointments {
+            color: #333; /* Updated to match first snippet's color */
+            background-color: #f2f2f2; /* Updated to match first snippet's header color */
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd; /* To match the table's style */
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Your Appointments</h2>
+    {% if appointments %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time Slot</th> 
+                    <th>Status</th> 
+                    <th>Prescription</th>
+                    <th>Medication</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.doctor_name }}</td> <!-- Replace with doctor's name if available -->
+                    <td>{{ appointment.date }}</td>
+                    <td>{{ appointment.time_slot }}</td>
+                    <td> {{ appointment.status }} </td> 
+                    <td> 
+                        {% if appointment.prescription %}
+                            {{ appointment.prescription.prescription_text }}
+                        {% else %}
+                            No Prescription
+                        {% endif %}
+                    </td>
+                    <td> 
+                        {% if appointment.medication %}
+                            {{ appointment.medication.medication_text }}-{{ appointment.medication.dosage }}
+                        {% else %}
+                            No Medication
+                        {% endif %}
+                    </td>
+                
+                    <td>
+                        {# Existing buttons and forms #}
+                        {% if appointment.status == 'Completed' %}
+                        <div class="tooltip">
+                            <a class="btn-disabled" href="#" onclick="event.preventDefault();">Edit</a>
+                            <span class="tooltiptext">Appointment already completed and cannot be edited</span>
+                        </div>
+                    {% else %}
+                    <a href="{{ url_for('edit_patient_appointment', appointment_id=appointment._id) }}">Edit</a>
+                    {% endif %}
+    {# cancel#}
+                        <form action="{{ url_for('cancel_patient_appointment', appointment_id=appointment._id) }}" method="post">
+                            {% if appointment.status == 'Completed' %}
+                            <div class="tooltip">
+                                <input type="submit" value="Cancel" disabled>
+                                <span class="tooltiptext">Appointment already completed and cannot be canceled</span>
+                            </div>                        
+                        {% elif appointment.status == 'Paid' %}
+                        <div class="tooltip">
+                            <input type="submit" value="Cancel" disabled>
+                            <span class="tooltiptext">Appointment is paid for and cannot be canceled here. Please contact the hospital.</span>
+                        </div>
+                        {% else %}
+                            <input type="submit" value="Cancel">
+                        {% endif %}
+                        </form>
+                        {% if appointment.status == 'Completed' %}
+                        <a href="{{ url_for('give_feedback_patient', appointment_id=appointment._id) }}">Feedback</a>
+                    {% else %}
+                    <div class="tooltip">
+                        <a class="btn-disabled" href="#" onclick="event.preventDefault();">Feedback</a>
+                        <span class="tooltiptext">You can give feedback only after Appointment completed</span>
+                    </div>
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+                    </table>
+    {% else %}
+        <p class="no-appointments">No appointments are available.</p>
+    {% endif %}
+    <p><a href="{{ url_for('patient_dashboard') }}">Back</a></p>
+</body>
+</html>

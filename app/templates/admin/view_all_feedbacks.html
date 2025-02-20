@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Feedbacks</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .btn-disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            padding: 5px 10px;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+        }
+        
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        .btn-green {
+            background-color: #5cb85c;
+            transition: background-color 0.3s; /* Smooth transition for hover effect */
+        }
+        
+        .btn-green:hover {
+            background-color: #4cae4c; /* Darker shade of green for hover state */
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        a, input[type=submit] {
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        a {
+            background-color: #5bc0de;
+        }
+
+        a:hover {
+            background-color: #31b0d5;
+        }
+
+        input[type=submit] {
+            background-color: #d9534f;
+        }
+
+        input[type=submit]:hover {
+            background-color: #c9302c;
+        }
+
+        form {
+            display: inline; /* To show buttons on the same line */
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -60px;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h2>All Feedbacks</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Doctor Name</th>
+                <th>Patient Name</th>
+                <th>Appointment Date</th>
+                <th>Appointment Time</th>
+                <th>Feedback</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+<!-- Inside the table body in view_all_feedbacks.html -->
+<tbody>
+    {% for feedback in feedbacks %}
+    <tr>
+        <td>{{ feedback.doctor_name }}</td>
+        <td>{{ feedback.patient_name }}</td>
+        <td>{{ feedback.appointment_date }}</td>
+        <td>{{ feedback.appointment_time }}</td>
+        <td>{{ feedback.feedback_text }}</td>
+        <td>{{ feedback.rating }}</td>
+        {% if feedback.doctor_name == 'Unknown' %}
+        <td colspan="6">Appointment details not available for this feedback.</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</tbody>
+    </table>
+    <br>
+    <br>
+    <a href="{{ url_for('admin_dashboard') }}" class="button-style">Back to Dashboard</a>
+
+</body>
+</html>

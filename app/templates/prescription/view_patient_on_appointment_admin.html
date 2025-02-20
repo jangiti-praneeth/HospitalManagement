@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Patient Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .patient-details {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .patient-details h2 {
+            margin-top: 0;
+        }
+        form {
+            background-color: #f1f1f1;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        form label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        form textarea, form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+        }
+        form input[type="submit"] {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        form input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% set latest_category, latest_message = messages[-1] %}
+      <div class="flash-{{ latest_category }}">{{ latest_message }}</div>
+    {% endif %}
+  {% endwith %}
+  
+    <div class="container">
+        <!-- Patient Details -->
+        <div class="patient-details">
+            <h2>Patient Details</h2>
+            <p><strong>Name:</strong>{{ patient.name if patient.name else patient.first_name }} </p>
+            <p><strong>Date of Birth:</strong> {{ patient.dob }}</p>
+            <p><strong>Sex:</strong> {{ patient.sex }}</p>
+            <p><strong>Email:</strong> {{ patient.contactInfo.email }}</p>
+            <p><strong>Phone:</strong> {{ patient.contactInfo.phone }}</p>
+            <p><strong>Address:</strong> {{ patient.contactInfo.address }}</p>
+            <!-- Add other patient details as necessary -->
+        </div>
+<!-- Navigation Link --> 
+        <a href="{{ url_for('view_admin_appointments') }}">Back</a>
+    </div>
+</body>
+</html>

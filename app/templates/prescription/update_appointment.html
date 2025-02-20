@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Appointment</title>
+</head>
+<body>
+    <h2>Update Appointment</h2>
+    <form action="/update_appointment/{{ appointment._id }}" method="post">
+        <label for="doctor_prescription">Doctor's Prescription:</label>
+        <textarea id="doctor_prescription" name="doctor_prescription">{{ appointment.doctor_prescription }}</textarea>
+        <br><br>
+
+        <label for="patient_feedback">Patient's Feedback:</label>
+        <textarea id="patient_feedback" name="patient_feedback">{{ appointment.patient_feedback }}</textarea>
+        <br><br>
+
+        <input type="submit" value="Update">
+    </form>
+</body>
+</html>

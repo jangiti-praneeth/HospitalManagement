@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor's Appointments</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .btn-disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            padding: 5px 10px;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+        }
+        
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        .btn-green {
+            background-color: #5cb85c;
+            transition: background-color 0.3s; /* Smooth transition for hover effect */
+        }
+        
+        .btn-green:hover {
+            background-color: #4cae4c; /* Darker shade of green for hover state */
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        a, input[type=submit] {
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        a {
+            background-color: #5bc0de;
+        }
+
+        a:hover {
+            background-color: #31b0d5;
+        }
+
+        input[type=submit] {
+            background-color: #d9534f;
+        }
+
+        input[type=submit]:hover {
+            background-color: #c9302c;
+        }
+
+        form {
+            display: inline; /* To show buttons on the same line */
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -60px;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+        
+    </style>
+</head>
+<body>
+    <h2>Your Upcoming Appointments</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Time Slot</th>
+                <th>Status</th> 
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in appointments %}
+            <tr>
+                <td>{{ appointment.patient_name }}</td> <!-- Assuming patient_name is available -->
+                <td>{{ appointment.date }}</td>
+                <td>{{ appointment.time_slot }}</td>
+                <td>{{ appointment.status }}</td>  
+                <td>
+                    <a href="/view_patient_on_appointment/{{ appointment._id }}" class="btn-green">View patient</a>
+                    {% if appointment.status == 'Completed' %}
+                    <div class="tooltip">
+                        <a class="btn-disabled" href="#" onclick="event.preventDefault();">Edit</a>
+                        <span class="tooltiptext">Appointment already completed and cannot be edited</span>
+                    </div>
+                {% else %}
+                    <a href="/edit_doctor_appointment/{{ appointment._id }}">Edit</a>
+                {% endif %}
+                {# cancel#}
+                 <form action="/cancel_doctor_appointment/{{ appointment._id }}" method="post" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                        {% if appointment.status == 'Completed' %}
+                        <div class="tooltip">
+                            <input type="submit" value="Cancel" disabled>
+                            <span class="tooltiptext">Appointment already completed and cannot be canceled</span>
+                        </div>                        
+                    {% else %}
+                        <input type="submit" value="Cancel">
+                    {% endif %}
+                        </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="{{ url_for('doctor_dashboard') }}">Back to Dashboard</a>
+</body>
+<script>
+    function showAlert(event) {
+        if(event.currentTarget.disabled) {
+            alert("This appointment is already completed and cannot be canceled.");
+            event.preventDefault();
+        }
+    }
+</script>
+
+</html>

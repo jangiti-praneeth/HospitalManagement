@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Appointment</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 10px;
+            width: 500px;
+        }
+        label {
+            display: block;
+            margin: 10px 0px;
+        }
+        input[type=date],
+        select,
+        input[type=submit] {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type=submit] {
+            width: auto;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+        }
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+        .flashes {
+            padding: 0;
+            list-style-type: none;
+        }
+        .flashes li {
+            margin-top: 10px;
+            color: #ff0000; /* Change the color based on your preference */
+        }
+        a {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+            /* Styles for payment details form */
+    #paymentDetailsForm {
+        background: #f8f8f8;
+        padding: 15px;
+        margin-top: 15px;
+        border-radius: 8px;
+        text-align: left;
+    }
+
+    #paymentDetailsForm label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    #paymentDetailsForm input[type="text"] {
+        width: 95%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    #paymentDetailsForm button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #paymentDetailsForm button:hover {
+        background-color: #0056b3;
+    }
+
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% set category, message = messages[-1] %}
+        <ul class="flashes">
+            <li class="{{ category }}">{{ message }}</li>
+        </ul>
+    {% endif %}
+{% endwith %}
+
+    <h2>Book an Appointment</h2>
+    <form action="{{ url_for('book_appointment') }}" method="post">
+        <label for="doctor_id">Choose a Doctor:</label>
+        <select name="doctor_id" id="doctor_id" required>
+            {% for doctor in doctors %}
+                <option value="{{ doctor['_id'] }}">{{ doctor['name'] }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+        <br><br>
+        <label for="time_slot">Time Slot:</label>
+        <select name="time_slot" id="time_slot" required>
+            {% if available_slots %}
+                {% for slot in available_slots %}
+                    <option value="{{ slot }}">{{ slot }}</option>
+                {% endfor %}
+            {% else %}
+                <option>No available slots</option>
+            {% endif %}
+        </select>
+        <input type="text" id="amount" name="amount" value="150$" hidden>
+        <br><br>
+        <label for="payment_method">Payment Method:</label><br>
+        <select name="payment_method" id="payment_method" required onchange="showPaymentForm()">
+            <option value="cash">Cash at Hospital</option>
+            <option value="credit_card">Credit Card</option>
+            <option value="debit_card">Debit Card</option>
+            <option value="checking_account">Checking Account</option>
+        </select>
+        <br><br>
+        
+    <div id="paymentDetailsForm" style="display:none;">
+        <h3>Enter Payment Details</h3>
+        <label for="name_on_card">Name on Card:</label>
+        <input type="text" id="name_on_card" name="name_on_card"><br>
+        <label for="card_number">Card Number:</label>
+        <input type="text" id="card_number" name="card_number"><br>
+        <label for="expiry_date">Expiry Date:</label>
+        <input type="text" id="expiry_date" name="expiry_date"><br>
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" name="cvv"><br>
+        <!-- Add more fields as needed -->
+        <button onclick="closePaymentForm()">Close</button>
+    </div>
+
+        <input type="submit" value="Book">
+    </form>
+    <br>
+    <a href="{{ url_for('patient_dashboard') }}">Back to Dashboard</a>
+</body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function showPaymentForm() {
+            var paymentMethod = document.getElementById("payment_method").value;
+            var form = document.getElementById("paymentDetailsForm");
+            
+            if (paymentMethod === "credit_card" || paymentMethod === "debit_card" || paymentMethod === "checking_account") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+
+        function closePaymentForm() {
+            document.getElementById("paymentDetailsForm").style.display = "none";
+        }
+
+        $(document).ready(function() {
+            var submitButton = $("input[type='submit']");
+            submitButton.prop("disabled", true);  // Disable the submit button initially
+
+            // Function to fetch the slots
+            function fetchSlots() {
+                var doctor_id = $('#doctor_id').val();
+                var date = $('#date').val();
+                var time_slot = $('#time_slot');
+                
+                time_slot.empty();
+                time_slot.append(new Option("Fetching available slots...", ""));
+                submitButton.prop("disabled", true); // Disable the submit button while fetching
+
+                if (doctor_id && date) {
+                    $.post("{{ url_for('get_available_slots') }}", {
+                        doctor_id: doctor_id,
+                        date: date
+                    }, function(data) {
+                        time_slot.empty();
+
+                        if (data.error) {
+                            alert(data.error);
+                        } else if (data.available_slots.length) {
+                            $.each(data.available_slots, function(index, value) {
+                                time_slot.append(new Option(value, value.split(" - ")[0]));
+                            });
+                            submitButton.prop("disabled", false); // Enable the submit button
+                        } else {
+                            time_slot.append(new Option("No available slots", ""));
+                        }
+                    });
+                }
+            }
+
+            // Trigger slot fetching on doctor_id and date change
+            $('#doctor_id, #date').change(fetchSlots);
+        });
+    </script>
+
+</html>

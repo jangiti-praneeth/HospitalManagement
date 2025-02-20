@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Set Schedule</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: left;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            margin: 20px auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type=checkbox] {
+            margin-right: 10px;
+        }
+        input[type=time] {
+            margin: 5px 0 20px 0;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type=submit] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #5cb85c;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type=submit]:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Set Schedule</h1>
+    <form action="{{ url_for('set_schedule') }}" method="post">
+        <label>Select Days:</label><br>
+        <input type="checkbox" name="days" value="Monday"> Monday<br>
+        <input type="checkbox" name="days" value="Tuesday"> Tuesday<br>
+        <input type="checkbox" name="days" value="Wednesday"> Wednesday<br>
+        <input type="checkbox" name="days" value="Thursday"> Thursday<br>
+        <input type="checkbox" name="days" value="Friday"> Friday<br>
+        <input type="checkbox" name="days" value="Saturday"> Saturday<br>
+        <input type="checkbox" name="days" value="Sunday"> Sunday<br><br>
+        <label for="start_time">Start Time:</label>
+        <input type="time" id="start_time" name="start_time"><br>
+        <label for="end_time">End Time:</label>
+        <input type="time" id="end_time" name="end_time"><br><br>
+        <input type="submit" value="Set Schedule">
+    </form>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Appointment</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        
+        h2 {
+            color: #333;
+        }
+        .button-patient {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            background-color: #337ab7; /* Bootstrap primary button color */
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            width: 150px;
+        }
+        .button-green{
+            display: inline-block;
+            padding: 10px 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            background-color: #5cb85c; /* Bootstrap primary button color */
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            width: 150px;
+        }
+        .button-patient:hover {
+            background-color: #286090; /* Darken button on hover */
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type=date],
+        select,
+        input[type=submit] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box; /* Makes sure the padding doesn't affect the overall width */
+        }
+
+        input[type=submit] {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        input[type=submit]:hover {
+            background-color: #4cae4c;
+        }
+
+        .flashes {
+            padding: 10px 0;
+            list-style: none;
+        }
+
+        .flashes li {
+            margin-bottom: 10px;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .error {
+            background-color: #d9534f;
+        }
+
+        .success {
+            background-color: #5cb85c;
+        }
+
+        .info {
+            background-color: #5bc0de;
+        }
+
+        .warning {
+            background-color: #f0ad4e;
+        }
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% set category, message = messages[-1] %}
+        <ul class="flashes">
+            <li class="{{ category }}">{{ message }}</li>
+        </ul>
+    {% endif %}
+{% endwith %}
+
+
+    <h2>Update an Appointment</h2>
+    <form action="{{ url_for('edit_doctor_appointment', appointment_id=appointment['_id']) }}" method="post">
+
+        <input type="hidden" id="appointment_id" name="appointment_id" value="{{ appointment['_id'] }}">
+
+        <label>Patient Name:</label>
+        <p>{{ patient['name'] }}</p>
+        
+        <label>Date:</label>
+        <p>{{ appointment['date'] }}</p>
+
+        <label>Time Slot:</label>
+        <p>{{ appointment['time_slot'] }}</p>
+        
+        <label for="status">Status:</label>
+        <select name="status" id="status" required>
+            <option value="Pending" {% if appointment.status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Confirmed" {% if appointment.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+            <option value="Completed" {% if appointment.status == 'Completed' %}selected{% endif %}>Completed</option>
+        </select>
+        
+
+        
+        <input type="submit" value="Update">
+    </form>
+    <br>
+    <a href="{{ url_for('view_patient_on_appointment', appointment_id=appointment._id) }}" class="button-green">See this patient</a>
+    <br>
+
+    <a href="{{ url_for('doctor_dashboard') }}" class="button-patient">Back to Dashboard</a>
+</body>
+</html>

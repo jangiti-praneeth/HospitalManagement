@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        input[type=text],
+        input[type=email],
+        input[type=date],
+        input[type=password],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* include padding in width */
+        }
+
+        input[type=radio] {
+            margin-right: 5px;
+        }
+
+        input[type=submit] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            background-color: #5cb85c;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type=submit]:hover {
+            background-color: #4cae4c;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Admin Registration</h2>
+    <form action="/admin_secret" method="post">
+        <label for="first_name">First Name:</label>
+    <input type="text" id="first_name" name="first_name" required>
+
+    <label for="last_name">Last Name:</label>
+    <input type="text" id="last_name" name="last_name" required>
+
+    <label for="ssn">Social Security Number:</label>
+    <input type="text" id="ssn" name="ssn" required>
+
+       
+        
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+        
+        <label for="sex">Sex:</label>
+        <div>
+            <label style="display: inline-block; margin-right: 10px;">
+                <input type="radio" id="male" name="sex" value="male" required>
+                Male
+            </label>
+            
+            <label style="display: inline-block; margin-right: 10px;">
+                <input type="radio" id="female" name="sex" value="female" required>
+                Female
+            </label>
+            
+            <label style="display: inline-block;">
+                <input type="radio" id="other" name="sex" value="other" required>
+                Other
+            </label>
+        </div>
+                
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" required>
+        
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" required></textarea>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+                
+        <input type="submit" value="Register">
+    </form>
+</body>
+</html>

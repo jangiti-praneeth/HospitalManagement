@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Appointment</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        
+        h2 {
+            color: #333;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type=date],
+        select,
+        input[type=submit] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box; /* Makes sure the padding doesn't affect the overall width */
+        }
+
+        input[type=submit] {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        input[type=submit]:hover {
+            background-color: #4cae4c;
+        }
+
+        .flashes {
+            padding: 10px 0;
+            list-style: none;
+        }
+
+        .flashes li {
+            margin-bottom: 10px;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .error {
+            background-color: #d9534f;
+        }
+
+        .success {
+            background-color: #5cb85c;
+        }
+
+        .info {
+            background-color: #5bc0de;
+        }
+
+        .warning {
+            background-color: #f0ad4e;
+        }
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% set category, message = messages[-1] %}
+        <ul class="flashes">
+            <li class="{{ category }}">{{ message }}</li>
+        </ul>
+    {% endif %}
+{% endwith %}
+    <h2>Update an Appointment</h2>
+    <form action="{{ url_for('edit_patient_appointment', appointment_id=appointment._id) }}" method="post">
+
+        <input type="hidden" id="appointment_id" name="appointment_id" value="{{ appointment['_id'] }}">
+        
+        <label for="doctor_id">Choose a Doctor:</label>
+        <select name="doctor_id" id="doctor_id" required>
+            {% for doctor in doctors %}
+                <option value="{{ doctor['_id'] }}" {% if appointment['doctor_id'] == doctor['_id'] %}selected{% endif %}>{{ doctor['name'] }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" value="{{ appointment['date'] }}" required>
+        <br><br>
+
+        <label for="time_slot">Time Slot:</label>
+        <select name="time_slot" id="time_slot" required>
+            <!-- The available_slots need to be fetched similarly to the booking form -->
+            <!-- Assume the slots are pre-fetched for the chosen doctor and date -->
+            {% for slot in available_slots %}
+                <option value="{{ slot }}" {% if appointment['time_slot'].startswith(slot.split(' - ')[0]) %}selected{% endif %}>{{ slot }}</option>
+            {% endfor %}
+        </select>
+        
+        <br><br>
+
+        <input type="submit" value="Update">
+    </form>
+    <br>
+    <a href="{{ url_for('patient_dashboard') }}">Back to Dashboard</a>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Function to update the slots
+        function updateSlots() {
+            var doctor_id = $('#doctor_id').val();
+            var date = $('#date').val();
+            var time_slot = $('#time_slot');
+            
+            // Clear the dropdown before fetching new slots
+            time_slot.empty();
+            time_slot.append(new Option("Fetching available slots...", ""));
+
+            // Only fetch if both doctor_id and date are available
+            if (doctor_id && date) {
+                $.post("{{ url_for('get_available_slots') }}", {
+                    doctor_id: doctor_id,
+                    date: date
+                }, function(data) {
+                    time_slot.empty(); // Clear the dropdown after fetch
+
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        // Populate the dropdown with slots
+                        $.each(data.available_slots, function(index, value) {
+                            var option = new Option(value, value.split(" - ")[0]);
+                            // Set selected if it matches the current appointment time
+                            if ("{{ appointment['time_slot'] }}" === value) {
+                                $(option).prop('selected', true);
+                            }
+                            time_slot.append(option);
+                        });
+                    }
+                });
+            }
+        }
+
+        // Trigger slot updating on doctor_id and date change
+        $('#doctor_id, #date').change(updateSlots);
+
+        // Initial call to updateSlots() to fetch slots for pre-selected doctor and date
+        updateSlots(); // Call this function when the page loads
+    });
+</script>
+
+</html>
