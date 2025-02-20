@@ -12,7 +12,11 @@ Hospital management system is designed as a cutting-edge digital solution aimed 
 
 ●	Docker: Provides a standardized unit of software, packaging up code and all its dependencies so the application runs quickly and reliably from one computing environment to another.
 
-●	GitHub and GitHub Actions: Employed for version control and CI/CD automation, these tools facilitate streamlined development workflows and collaboration.![image](https://github.com/user-attachments/assets/beb60fa5-1454-4c27-ba94-e9eee37d8424)
+●	GitHub and GitHub Actions: Employed for version control and CI/CD automation, these tools facilitate streamlined development workflows and collaboration.
+
+**System Architecture**
+
+![image](https://github.com/user-attachments/assets/beb60fa5-1454-4c27-ba94-e9eee37d8424)
 
 
 
